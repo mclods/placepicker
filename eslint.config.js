@@ -34,5 +34,9 @@ export default [
         { allowConstantExport: true },
       ],
     },
+    globals: {
+      cy: true,
+      Cypress: true,
+    },
   },
 ];
