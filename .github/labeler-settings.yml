@@ -1,0 +1,17 @@
+feature:
+  - head-branch: '^feature/'
+
+bugfix:
+  - head-branch: '^bugfix/'
+
+hotfix:
+  - head-branch: '^hotfix/'
+
+test:
+  - head-branch: '^test/'
+
+docs:
+  - head-branch: '^docs/'
+
+chore:
+  - head-branch: '^chore/'
