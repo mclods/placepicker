@@ -8,7 +8,7 @@ function Header() {
         className="w-20 h-20 object-contain drop-shadow-lg"
         alt="Stylized Globe"
       />
-      <p className="font-bold text-6xl tracking-[1rem] uppercase">
+      <p className="font-extrabold text-6xl tracking-[1rem] uppercase">
         Placepicker
       </p>
       <p className="w-[40ch] text-lg text-center">
