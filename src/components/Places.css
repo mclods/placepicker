@@ -1,0 +1,37 @@
+@keyframes slide-up-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(3rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.gridCols {
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+}
+
+.placeCardStyle {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  animation: slide-up-fade-in 0.3s ease-out forwards;
+}
+
+.placeCardStyle:nth-child(odd) button:hover,
+.placeCardStyle:nth-child(odd) button:focus {
+  box-shadow: 0 0 8px 4px rgba(255, 217, 0, 0.6);
+  border-radius: 8px;
+  transform: rotate(5deg);
+}
+
+.placeCardStyle:nth-child(even) button:hover,
+.placeCardStyle:nth-child(even) button:focus {
+  box-shadow: 0 0 8px 4px rgba(255, 217, 0, 0.6);
+  border-radius: 8px;
+  transform: rotate(-5deg);
+}
+
+.placeNameShadow {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
