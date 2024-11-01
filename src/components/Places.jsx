@@ -1,6 +1,17 @@
 import './Places.css';
 
-function Places({ title, places, fallbackText }) {
+function Places({ title, places, fallbackText, onPlaceClick }) {
+  function handleOnPlaceClick(place) {
+    const selectedPlace = {
+      ...place,
+      image: {
+        src: place.image.src,
+        alt: place.image.alt,
+      },
+    };
+    onPlaceClick(selectedPlace);
+  }
+
   return (
     <section
       className="mx-28 my-8 px-8 py-4  rounded-md border-2 border-slate-950"
@@ -26,6 +37,7 @@ function Places({ title, places, fallbackText }) {
               <button
                 className="w-full h-full"
                 data-testid="place-list-card-btn"
+                onClick={() => handleOnPlaceClick(place)}
               >
                 <img
                   src={place.image.src}
