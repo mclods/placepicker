@@ -4,6 +4,7 @@ import fixture from '../fixtures/example.json';
 
 describe('Placepicker Tests', () => {
   it('Load the App', () => {
+    // Requesting permission for geolocation will throw error
     cy.visit('/', {
       onBeforeLoad(win) {
         cy.stub(
