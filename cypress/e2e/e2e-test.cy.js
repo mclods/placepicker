@@ -1,10 +1,22 @@
 /// <reference types="Cypress" />
 
-import fixture from '../fixtures/example.json';
+import defaultPlaces from '../fixtures/default-places.json';
+import sortedPlaces from '../fixtures/sorted-places.json';
 
 describe('Placepicker Tests', () => {
   it('Load the App', () => {
-    cy.visit('/');
+    // Requesting permission for geolocation will throw error
+    cy.visit('/', {
+      onBeforeLoad(win) {
+        cy.stub(
+          win.navigator.geolocation,
+          'getCurrentPosition',
+          (success, error) => {
+            throw error({ code: 1 });
+          }
+        );
+      },
+    });
 
     cy.getTestId('company-logo').should('exist');
     cy.getTestId('company-title').should('have.text', 'Placepicker');
@@ -43,10 +55,10 @@ describe('Placepicker Tests', () => {
           .each((placeItem, index) => {
             cy.wrap(placeItem)
               .find('img')
-              .should('have.attr', 'alt', fixture[index].image.alt);
+              .should('have.attr', 'alt', defaultPlaces[index].image.alt);
             cy.wrap(placeItem)
               .find('p')
-              .should('have.text', fixture[index].title);
+              .should('have.text', defaultPlaces[index].title);
           });
       });
   });
@@ -86,10 +98,10 @@ describe('Placepicker Tests', () => {
           .each((placeItem, index) => {
             cy.wrap(placeItem)
               .find('img')
-              .should('have.attr', 'alt', fixture[index].image.alt);
+              .should('have.attr', 'alt', defaultPlaces[index].image.alt);
             cy.wrap(placeItem)
               .find('p')
-              .should('have.text', fixture[index].title);
+              .should('have.text', defaultPlaces[index].title);
           });
       });
   });
@@ -136,6 +148,36 @@ describe('Placepicker Tests', () => {
             'have.text',
             'Select the places you would like to visit below.'
           );
+      });
+  });
+
+  it('Test location based sorting', () => {
+    // Requesting permission for geolocation will throw error
+    cy.visit('/', {
+      onBeforeLoad(win) {
+        cy.stub(win.navigator.geolocation, 'getCurrentPosition', (success) => {
+          success({ coords: { latitude: 24.7912052, longitude: 84.9973546 } });
+        });
+      },
+    });
+
+    cy.getTestId('places-section')
+      .eq(1)
+      .then((place) => {
+        cy.wrap(place)
+          .find('[data-testid="places-section-title"]')
+          .should('have.text', 'Available Places');
+
+        cy.wrap(place)
+          .find('[data-testid="place-list-item"]')
+          .each((placeItem, index) => {
+            cy.wrap(placeItem)
+              .find('img')
+              .should('have.attr', 'alt', sortedPlaces[index].image.alt);
+            cy.wrap(placeItem)
+              .find('p')
+              .should('have.text', sortedPlaces[index].title);
+          });
       });
   });
 });
