@@ -5,12 +5,30 @@ import Footer from './components/Footer';
 import Header from './components/Header';
 import Places from './components/Places';
 import { AVAILABLE_PLACES } from './utils/data';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { sortPlacesByDistance } from './utils/loc';
 
 function App() {
   const modalRef = useRef();
   const selectedPlaceForDeletionRef = useRef();
   const [pickedPlaces, setPickedPlaces] = useState([]);
+  const [availablePlaces, setAvailablePlaces] = useState([]);
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const sortedPlaces = sortPlacesByDistance(
+          AVAILABLE_PLACES,
+          position.coords.latitude,
+          position.coords.longitude
+        );
+        setAvailablePlaces(sortedPlaces);
+      },
+      () => {
+        setAvailablePlaces(AVAILABLE_PLACES);
+      }
+    );
+  }, []);
 
   function handleAddToPickedPlaces(place) {
     const newPlace = {
@@ -40,7 +58,7 @@ function App() {
     };
 
     modalRef.current.open();
-    selectedPlaceForDeletionRef.current = place;
+    selectedPlaceForDeletionRef.current = selectedPlace;
   }
 
   function removeSelectedPlace() {
@@ -87,7 +105,8 @@ function App() {
         />
         <Places
           title="Available Places"
-          places={AVAILABLE_PLACES}
+          fallbackText="Sorting places by distance..."
+          places={availablePlaces}
           onPlaceClick={handleAddToPickedPlaces}
         />
       </main>
