@@ -4,7 +4,17 @@ import fixture from '../fixtures/example.json';
 
 describe('Placepicker Tests', () => {
   it('Load the App', () => {
-    cy.visit('/');
+    cy.visit('/', {
+      onBeforeLoad(win) {
+        cy.stub(
+          win.navigator.geolocation,
+          'getCurrentPosition',
+          (success, error) => {
+            throw error({ code: 1 });
+          }
+        );
+      },
+    });
 
     cy.getTestId('company-logo').should('exist');
     cy.getTestId('company-title').should('have.text', 'Placepicker');
