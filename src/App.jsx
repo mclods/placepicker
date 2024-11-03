@@ -48,6 +48,8 @@ function App() {
       if (!existingPlace) {
         return [...prevPickedPlaces, newPlace];
       }
+
+      return [...prevPickedPlaces];
     });
 
     const storedPlaces =
