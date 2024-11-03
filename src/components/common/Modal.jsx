@@ -1,22 +1,17 @@
-import { useImperativeHandle } from 'react';
-import { useRef } from 'react';
-import { forwardRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import './Modal.css';
 
-const Modal = forwardRef(function Modal(
-  { title, message, dialogButtons },
-  ref
-) {
+function Modal({ title, message, dialogButtons, openModal }) {
   const dialogRef = useRef();
 
-  useImperativeHandle(ref, function () {
-    return {
-      open() {
-        dialogRef.current.showModal();
-      },
-    };
-  });
+  useEffect(() => {
+    if (openModal) {
+      dialogRef.current.showModal();
+    } else {
+      dialogRef.current.close();
+    }
+  }, [openModal]);
 
   const buttons = dialogButtons ?? <button>Close</button>;
 
@@ -36,6 +31,6 @@ const Modal = forwardRef(function Modal(
     </dialog>,
     document.getElementById('modal')
   );
-});
+}
 
 export default Modal;
