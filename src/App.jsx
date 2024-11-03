@@ -11,7 +11,7 @@ import { sortPlacesByDistance } from './utils/loc';
 const storedPlaces = JSON.parse(localStorage.getItem('selectedPlaces')) || [];
 
 function App() {
-  const modalRef = useRef();
+  const [openModal, setOpenModal] = useState(false);
   const selectedPlaceForDeletionRef = useRef();
   const [pickedPlaces, setPickedPlaces] = useState(storedPlaces);
   const [availablePlaces, setAvailablePlaces] = useState([]);
@@ -52,6 +52,7 @@ function App() {
       return [...prevPickedPlaces];
     });
 
+    // Add place to browser storage
     const storedPlaces =
       JSON.parse(localStorage.getItem('selectedPlaces')) || [];
     const existingPlace = storedPlaces.some(
@@ -73,8 +74,8 @@ function App() {
       },
     };
 
-    modalRef.current.open();
     selectedPlaceForDeletionRef.current = selectedPlace;
+    setOpenModal(true);
   }
 
   function removeSelectedPlace() {
@@ -93,6 +94,7 @@ function App() {
       return currentPlaces;
     });
 
+    // Remove place from local storage
     const storedPlaces =
       JSON.parse(localStorage.getItem('selectedPlaces')) || [];
     const placeIndex = storedPlaces.findIndex(
@@ -102,10 +104,13 @@ function App() {
       storedPlaces.splice(placeIndex, 1);
       localStorage.setItem('selectedPlaces', JSON.stringify([...storedPlaces]));
     }
+
+    setOpenModal(false);
   }
 
   function cancelDeletion() {
     selectedPlaceForDeletionRef.current.ref = undefined;
+    setOpenModal(false);
   }
 
   return (
@@ -113,7 +118,7 @@ function App() {
       <Modal
         title="Delete Place"
         message="Are you sure you want to delete this place ?"
-        ref={modalRef}
+        openModal={openModal}
         dialogButtons={
           <DeleteConfirmationDialogButtons
             onCancel={cancelDeletion}
