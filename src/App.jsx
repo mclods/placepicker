@@ -119,6 +119,7 @@ function App() {
         title="Delete Place"
         message="Are you sure you want to delete this place ?"
         openModal={openModal}
+        onClose={cancelDeletion}
         dialogButtons={
           <DeleteConfirmationDialogButtons
             onCancel={cancelDeletion}
