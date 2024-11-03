@@ -4,19 +4,13 @@ import defaultPlaces from '../fixtures/default-places.json';
 import sortedPlaces from '../fixtures/sorted-places.json';
 
 describe('Placepicker Tests', () => {
+  before(() => {
+    cy.clearLocalStorage();
+  });
+
   it('Load the App', () => {
-    // Requesting permission for geolocation will throw error
-    cy.visit('/', {
-      onBeforeLoad(win) {
-        cy.stub(
-          win.navigator.geolocation,
-          'getCurrentPosition',
-          (success, error) => {
-            throw error({ code: 1 });
-          }
-        );
-      },
-    });
+    // Load App with no location access
+    cy.loadAppWithoutLocationAccess();
 
     cy.getTestId('company-logo').should('exist');
     cy.getTestId('company-title').should('have.text', 'Placepicker');
@@ -151,15 +145,45 @@ describe('Placepicker Tests', () => {
       });
   });
 
-  it('Test location based sorting', () => {
-    // Requesting permission for geolocation will throw error
-    cy.visit('/', {
-      onBeforeLoad(win) {
-        cy.stub(win.navigator.geolocation, 'getCurrentPosition', (success) => {
-          success({ coords: { latitude: 24.7912052, longitude: 84.9973546 } });
-        });
-      },
+  it('Test picked places persist after reload', () => {
+    // Select few available places
+    const placeIndexes = [4, 10, 16, 7];
+
+    placeIndexes.forEach((placeIndex) => {
+      cy.getTestId('places-section')
+        .eq(1)
+        .find('[data-testid="place-list-item"]')
+        .eq(placeIndex)
+        .click();
     });
+
+    // Assert selected places before reload
+    cy.getTestId('places-section')
+      .eq(0)
+      .find('[data-testid="place-list-item"]')
+      .each((place, index) => {
+        cy.wrap(place)
+          .find('p')
+          .should('have.text', defaultPlaces[placeIndexes[index]].title);
+      });
+
+    // Reload App
+    cy.loadAppWithoutLocationAccess();
+
+    // Assert selected places persist after reload
+    cy.getTestId('places-section')
+      .eq(0)
+      .find('[data-testid="place-list-item"]')
+      .each((place, index) => {
+        cy.wrap(place)
+          .find('p')
+          .should('have.text', defaultPlaces[placeIndexes[index]].title);
+      });
+  });
+
+  it('Test location based sorting', () => {
+    // Load App with stubbed location access
+    cy.loadAppWithStubbedLocation();
 
     cy.getTestId('places-section')
       .eq(1)
