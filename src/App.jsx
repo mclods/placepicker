@@ -8,10 +8,12 @@ import { AVAILABLE_PLACES } from './utils/data';
 import { useEffect, useRef, useState } from 'react';
 import { sortPlacesByDistance } from './utils/loc';
 
+const storedPlaces = JSON.parse(localStorage.getItem('selectedPlaces')) || [];
+
 function App() {
   const modalRef = useRef();
   const selectedPlaceForDeletionRef = useRef();
-  const [pickedPlaces, setPickedPlaces] = useState([]);
+  const [pickedPlaces, setPickedPlaces] = useState(storedPlaces);
   const [availablePlaces, setAvailablePlaces] = useState([]);
 
   useEffect(() => {
@@ -47,6 +49,18 @@ function App() {
         return [...prevPickedPlaces, newPlace];
       }
     });
+
+    const storedPlaces =
+      JSON.parse(localStorage.getItem('selectedPlaces')) || [];
+    const existingPlace = storedPlaces.some(
+      (place) => place.id === newPlace.id
+    );
+    if (!existingPlace) {
+      localStorage.setItem(
+        'selectedPlaces',
+        JSON.stringify([...storedPlaces, newPlace])
+      );
+    }
   }
 
   function handleRemoveFromPickedPlaces(place) {
@@ -76,6 +90,16 @@ function App() {
 
       return currentPlaces;
     });
+
+    const storedPlaces =
+      JSON.parse(localStorage.getItem('selectedPlaces')) || [];
+    const placeIndex = storedPlaces.findIndex(
+      (place) => place.id === selectedPlace.id
+    );
+    if (placeIndex !== -1) {
+      storedPlaces.splice(placeIndex, 1);
+      localStorage.setItem('selectedPlaces', JSON.stringify([...storedPlaces]));
+    }
   }
 
   function cancelDeletion() {
