@@ -118,6 +118,22 @@ describe('Placepicker Tests', () => {
     cy.getTestId('no-btn').should('have.text', 'No').click();
     cy.getTestId('dialog-container').should('not.be.visible');
 
+    // Open delete confimation dialog again and press Esc to close it
+    /** Triggering esc key is not working in cypress so commenting this check for now - need to fix later */
+    // cy.getTestId('places-section')
+    //   .eq(0)
+    //   .find('[data-testid="place-list-item"]')
+    //   .eq(0)
+    //   .click();
+
+    // cy.getTestId('dialog-container').should('be.visible');
+    // cy.getTestId('no-btn').trigger('keydown', {
+    //   key: 'Escape',
+    //   code: 'Escape',
+    //   which: 27,
+    // });
+    // cy.getTestId('dialog-container').should('not.be.visible');
+
     // Select all picked places for deletion
     cy.getTestId('places-section')
       .eq(0)
