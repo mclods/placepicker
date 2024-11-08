@@ -1,11 +1,11 @@
 import './App.css';
 import Modal from './components/common/Modal';
-import DeleteConfirmationDialogButtons from './components/DeleteConfirmationDialogButtons';
+import DeleteConfirmationDialog from './components/DeleteConfirmationDialog';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import Places from './components/Places';
 import { AVAILABLE_PLACES } from './utils/data';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { sortPlacesByDistance } from './utils/loc';
 
 const storedPlaces = JSON.parse(localStorage.getItem('selectedPlaces')) || [];
@@ -78,7 +78,7 @@ function App() {
     setOpenModal(true);
   }
 
-  function removeSelectedPlace() {
+  const removeSelectedPlace = useCallback(function () {
     const selectedPlace = selectedPlaceForDeletionRef.current;
 
     setPickedPlaces((prevPickedPlaces) => {
@@ -106,7 +106,7 @@ function App() {
     }
 
     setOpenModal(false);
-  }
+  }, []);
 
   function cancelDeletion() {
     selectedPlaceForDeletionRef.current.ref = undefined;
@@ -115,18 +115,12 @@ function App() {
 
   return (
     <>
-      <Modal
-        title="Delete Place"
-        message="Are you sure you want to delete this place ?"
-        openModal={openModal}
-        onClose={cancelDeletion}
-        dialogButtons={
-          <DeleteConfirmationDialogButtons
-            onCancel={cancelDeletion}
-            onConfirm={removeSelectedPlace}
-          />
-        }
-      />
+      <Modal openModal={openModal} onClose={cancelDeletion}>
+        <DeleteConfirmationDialog
+          onCancel={cancelDeletion}
+          onConfirm={removeSelectedPlace}
+        />
+      </Modal>
       <Header />
       <main>
         <Places

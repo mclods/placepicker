@@ -130,19 +130,39 @@ describe('Placepicker Tests', () => {
       });
 
     // Assert no picked places exist
+    cy.getTestId('places-fallback-text').should('exist');
+  });
+
+  it('Place picked for deletetion gets auto deleted after 5 seconds', () => {
+    cy.clock();
+
+    // Assert no picked places exist
+    cy.getTestId('places-fallback-text').should('exist');
+
+    // Select a place
+    cy.getTestId('places-section')
+      .eq(1)
+      .find('[data-testid="place-list-item"]')
+      .eq(0)
+      .click();
+
+    // Select place for deletion
     cy.getTestId('places-section')
       .eq(0)
-      .then((place) => {
-        cy.wrap(place)
-          .find('[data-testid="places-section-title"]')
-          .should('have.text', "I'd like to visit ...");
-        cy.wrap(place)
-          .find('[data-testid="places-fallback-text"]')
-          .should(
-            'have.text',
-            'Select the places you would like to visit below.'
-          );
-      });
+      .find('[data-testid="place-list-item"]')
+      .eq(0)
+      .click();
+
+    cy.getTestId('dialog-container').should('be.visible');
+    cy.getTestId('deletion-timeout-progress').should('be.visible');
+
+    // Forward time by 5 seconds
+    cy.tick(5000);
+
+    cy.getTestId('dialog-container').should('not.be.visible');
+
+    // Assert no picked places exist
+    cy.getTestId('places-fallback-text').should('exist');
   });
 
   it('Test picked places persist after reload', () => {
