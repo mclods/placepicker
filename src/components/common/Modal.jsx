@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import './Modal.css';
 
-function Modal({ title, message, dialogButtons, openModal, onClose }) {
+function Modal({ children, openModal, onClose }) {
   const dialogRef = useRef();
 
   useEffect(() => {
@@ -13,8 +13,6 @@ function Modal({ title, message, dialogButtons, openModal, onClose }) {
     }
   }, [openModal]);
 
-  const buttons = dialogButtons ?? <button>Close</button>;
-
   return createPortal(
     <dialog
       ref={dialogRef}
@@ -22,13 +20,7 @@ function Modal({ title, message, dialogButtons, openModal, onClose }) {
       className="w-[30vw] p-4 rounded-md backdrop:bg-stone-900/90 modal"
       data-testid="dialog-container"
     >
-      <p className="mb-2 font-bold text-2xl" data-testid="dialog-title">
-        {title}
-      </p>
-      <p className="mb-2" data-testid="dialog-message">
-        {message}
-      </p>
-      <form method="dialog">{buttons}</form>
+      {openModal && children}
     </dialog>,
     document.getElementById('modal')
   );
