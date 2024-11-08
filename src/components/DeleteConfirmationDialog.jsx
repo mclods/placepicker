@@ -29,7 +29,10 @@ function DeleteConfirmationDialog({ onCancel, onConfirm }) {
           className="flex justify-between items-center font-bold"
           data-testid="delete-confirmation-dialog-btn-container"
         >
-          <Progress totalTime={TOTAL_TIME} />
+          <Progress
+            totalTime={TOTAL_TIME}
+            data-testid="deletion-timeout-progress"
+          />
           <div className="flex gap-x-2">
             <button
               className={`${buttonStyle} active:shadow-inner`}
