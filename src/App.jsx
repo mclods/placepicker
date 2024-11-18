@@ -84,14 +84,7 @@ function App() {
     setPickedPlaces((prevPickedPlaces) => {
       const currentPlaces = [...prevPickedPlaces];
 
-      const placeIndex = prevPickedPlaces.findIndex(
-        (place) => place.id === selectedPlace.id
-      );
-      if (placeIndex !== -1) {
-        currentPlaces.splice(placeIndex, 1);
-      }
-
-      return currentPlaces;
+      return currentPlaces.filter((place) => place.id !== selectedPlace.id);
     });
 
     // Remove place from local storage
